@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome & Login Page</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(to right, #4285f4, #34a853);
@@ -13,11 +21,7 @@
       height: 100vh;
       flex-direction: column;
       transition: all 0.4s ease;
-    }
-
-    @keyframes fadeInDown {
-      0% { opacity: 0; transform: translateY(-40px); }
-      100% { opacity: 1; transform: translateY(0); }
+      padding: 20px;
     }
 
     @keyframes fadeInUp {
@@ -40,24 +44,27 @@
     }
 
     #typing {
-      font-size: 48px;
+      font-size: 6vw;
       white-space: nowrap;
       overflow: hidden;
       border-right: 3px solid white;
       width: 0;
       text-align: center;
       animation: typing 3s steps(30, end) forwards, blink 0.7s step-end infinite;
+      margin-bottom: 10px;
     }
 
     p {
-      font-size: 18px;
-      margin-bottom: 30px;
+      font-size: 4vw;
+      margin: 10px 0 30px;
       animation: fadeInUp 1.2s ease-in-out;
       text-align: center;
     }
 
     #welcome-section button {
       animation: bounce 1.8s infinite;
+      width: 80%;
+      max-width: 300px;
     }
 
     .hidden {
@@ -67,18 +74,21 @@
     .login-box {
       background-color: white;
       color: black;
-      padding: 30px;
+      padding: 25px 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       text-align: center;
+      width: 90%;
+      max-width: 350px;
     }
 
     input, button {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin: 10px 0;
       border-radius: 5px;
       border: 1px solid #ccc;
+      font-size: 1rem;
     }
 
     button {
@@ -116,6 +126,21 @@
       color: white;
       border: 1px solid #666;
     }
+
+    /* Responsive font sizing */
+    @media (max-width: 600px) {
+      #typing {
+        font-size: 6vw;
+      }
+
+      p {
+        font-size: 4vw;
+      }
+
+      .login-box {
+        padding: 20px 15px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -123,7 +148,7 @@
   <!-- Welcome Section -->
   <div id="welcome-section">
     <h1 id="typing"></h1>
-    <p style="text-align: center;">Please continue to login to access the site.</p>
+    <p>Please continue to login to access the site.</p>
     <button onclick="showLogin()">Continue to Login</button>
   </div>
 
@@ -151,7 +176,7 @@
       const error = document.getElementById("error");
 
       if (user === "Mohit" && pass === "1234@63") {
-        window.location.href = "https://sites.google.com/view/mohitkumar6355?usp=sharing";
+        window.open("https://sites.google.com/view/mohitkumar6355?usp=sharing", "_blank");
       } else {
         error.textContent = "❌ Invalid Username or Password";
       }
@@ -165,12 +190,19 @@
         : "🌙 Enable Dark Mode";
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const typing = document.getElementById("typing");
       const text = "Welcome to Mohit Saxena's Portal";
-      typing.textContent = text;
+      let i = 0;
+      function typeLetter() {
+        if (i < text.length) {
+          typing.textContent += text.charAt(i);
+          i++;
+          setTimeout(typeLetter, 100);
+        }
+      }
+      typeLetter();
     });
   </script>
-
 </body>
 </html>
