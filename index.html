@@ -13,6 +13,7 @@
 
     html, body {
       height: 100%;
+      width: 100%;
     }
 
     body {
@@ -20,64 +21,72 @@
       background: linear-gradient(to right, #4285f4, #34a853);
       color: white;
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s ease;
+      padding: 5vw;
+    }
+
+    #loader {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
-      transition: all 0.4s ease;
-      padding: 20px;
+      z-index: 9999;
+    }
+
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #4285f4;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     #container {
       width: 100%;
-      max-width: 400px;
+      max-width: 450px;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      animation: fadeInUp 1s ease;
-    }
-
-    @keyframes fadeInUp {
-      0% { opacity: 0; transform: translateY(40px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 100% }
-    }
-
-    @keyframes blink {
-      50% { border-color: transparent; }
     }
 
     #typing {
-      font-size: 6vw;
+      font-size: clamp(24px, 6vw, 36px);
       white-space: nowrap;
       overflow: hidden;
       border-right: 3px solid white;
-      width: 0;
-      animation: typing 3s steps(30, end) forwards, blink 0.7s step-end infinite;
       margin-bottom: 20px;
+      min-height: 48px;
     }
 
     p {
-      font-size: 4vw;
-      margin: 10px 0 30px;
-      animation: fadeInUp 1.2s ease-in-out;
+      font-size: clamp(16px, 4vw, 20px);
+      margin-bottom: 30px;
     }
 
-    #welcome-section button {
-      animation: bounce 1.8s infinite;
-      width: 80%;
+    button {
+      padding: 12px;
+      width: 90%;
       max-width: 300px;
       font-size: 1rem;
-      padding: 12px;
+      border-radius: 5px;
+      border: none;
+      margin: 10px auto;
+      cursor: pointer;
+      background-color: #4285f4;
+      color: white;
+      font-weight: bold;
     }
 
     .hidden {
@@ -85,17 +94,15 @@
     }
 
     .login-box {
-      background-color: white;
+      background: white;
       color: black;
-      padding: 25px 20px;
+      width: 100%;
+      padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      text-align: center;
-      width: 100%;
-      max-width: 350px;
     }
 
-    input, button {
+    input {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
@@ -104,20 +111,11 @@
       font-size: 1rem;
     }
 
-    button {
-      background-color: #4285f4;
-      color: white;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-    }
-
     .error {
       color: red;
       margin-top: 10px;
     }
 
-    /* Dark Mode */
     body.night {
       background-color: #121212;
       color: #f1f1f1;
@@ -139,50 +137,6 @@
       color: white;
       border: 1px solid #666;
     }
-
-    /* Loader */
-    #loader {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      width: 100vw;
-      background: #000;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 9999;
-    }
-
-    .spinner {
-      border: 6px solid #f3f3f3;
-      border-top: 6px solid #4285f4;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Responsive font sizing */
-    @media (max-width: 600px) {
-      #typing {
-        font-size: 7vw;
-      }
-
-      p {
-        font-size: 5vw;
-      }
-
-      #welcome-section button {
-        font-size: 4vw;
-        padding: 10px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -192,11 +146,11 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- Audio Files -->
+  <!-- Audio -->
   <audio id="welcome-audio" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio>
   <audio id="bg-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto" loop></audio>
 
-  <!-- Main Container -->
+  <!-- Main Content -->
   <div id="container" class="hidden">
     <!-- Welcome Section -->
     <div id="welcome-section">
@@ -220,15 +174,15 @@
   </div>
 
   <script>
-    // Show loader then welcome
+    // Loader then show main
     window.addEventListener("load", function () {
       setTimeout(() => {
         document.getElementById("loader").style.display = "none";
         document.getElementById("container").classList.remove("hidden");
 
-        // Play welcome sound
-        const audio = document.getElementById("welcome-audio");
-        audio.play().catch(e => console.log("Welcome sound blocked:", e));
+        // Welcome sound
+        const welcomeSound = document.getElementById("welcome-audio");
+        welcomeSound.play().catch(() => {});
       }, 1000);
     });
 
@@ -236,16 +190,15 @@
       document.getElementById("welcome-section").classList.add("hidden");
       document.getElementById("login-section").classList.remove("hidden");
 
-      // Play background music
       const bgMusic = document.getElementById("bg-music");
-      bgMusic.play().catch(e => console.warn("Background music blocked:", e));
+      bgMusic.play().catch(() => {});
     }
 
     function toggleMusic() {
-      const bgMusic = document.getElementById("bg-music");
+      const music = document.getElementById("bg-music");
       const btn = document.getElementById("musicBtn");
-      bgMusic.muted = !bgMusic.muted;
-      btn.textContent = bgMusic.muted ? "🔇 Unmute Music" : "🔊 Mute Music";
+      music.muted = !music.muted;
+      btn.textContent = music.muted ? "🔇 Unmute Music" : "🔊 Mute Music";
     }
 
     function login() {
@@ -261,24 +214,26 @@
     }
 
     function toggleMode() {
-      document.body.classList.toggle('night');
-      const btn = document.getElementById('modeBtn');
-      btn.textContent = document.body.classList.contains('night') 
-        ? "☀️ Enable Light Mode" 
-        : "🌙 Enable Dark Mode";
+      const body = document.body;
+      const btn = document.getElementById("modeBtn");
+      body.classList.toggle("night");
+      btn.textContent = body.classList.contains("night") ? "☀️ Enable Light Mode" : "🌙 Enable Dark Mode";
     }
 
     document.addEventListener("DOMContentLoaded", function () {
       const typing = document.getElementById("typing");
       const text = "Welcome to Mohit Saxena's Portal";
       let i = 0;
+      typing.textContent = "";
+
       function typeLetter() {
         if (i < text.length) {
           typing.textContent += text.charAt(i);
           i++;
-          setTimeout(typeLetter, 100);
+          setTimeout(typeLetter, 90);
         }
       }
+
       typeLetter();
     });
   </script>
