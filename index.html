@@ -2,21 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
- <meta name="google-site-verification" content="hz9VGpYM-vgVl-zF3ScPRcn0xk9MRkbsrYwS7lQWaoo" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome & Login Page</title>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/M_letter_icon.svg/512px-M_letter_icon.svg.png" type="image/png">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
       height: 100%;
       width: 100%;
-    }
-
-    body {
       font-family: Arial, sans-serif;
       background: linear-gradient(to right, #4285f4, #34a853);
       color: white;
@@ -48,9 +42,7 @@
       animation: spin 1s linear infinite;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     #container {
       width: 100%;
@@ -62,7 +54,7 @@
     }
 
     #typing {
-      font-size: clamp(24px, 6vw, 36px);
+      font-size: clamp(22px, 6vw, 32px);
       white-space: nowrap;
       overflow: hidden;
       border-right: 3px solid white;
@@ -71,8 +63,9 @@
     }
 
     p {
-      font-size: clamp(16px, 4vw, 20px);
+      font-size: clamp(14px, 4vw, 18px);
       margin-bottom: 30px;
+      padding: 0 10px;
     }
 
     button {
@@ -89,9 +82,7 @@
       font-weight: bold;
     }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
 
     .login-box {
       background: white;
@@ -137,6 +128,32 @@
       color: white;
       border: 1px solid #666;
     }
+
+    @media screen and (max-width: 480px) {
+      html, body {
+        padding: 20px 10px;
+      }
+
+      #container {
+        max-width: 100%;
+      }
+
+      #typing {
+        font-size: 6vw;
+      }
+
+      p {
+        font-size: 4.5vw;
+      }
+
+      button {
+        font-size: 4.5vw;
+      }
+
+      .login-box {
+        padding: 15px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -146,17 +163,19 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- Audio -->
+  <!-- Audio Elements -->
   <audio id="welcome-audio" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio>
   <audio id="bg-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto" loop></audio>
+  <audio id="continue-sound" src="https://www.soundjay.com/button/sounds/button-4.mp3" preload="auto"></audio>
+  <audio id="login-sound" src="https://www.soundjay.com/button/sounds/button-16.mp3" preload="auto"></audio>
 
-  <!-- Main Content -->
+  <!-- Main Container -->
   <div id="container" class="hidden">
     <!-- Welcome Section -->
     <div id="welcome-section">
       <h1 id="typing"></h1>
       <p>Please continue to login to access the site.</p>
-      <button onclick="showLogin()">Continue to Login</button>
+      <button onclick="handleContinue()">Continue to Login</button>
     </div>
 
     <!-- Login Section -->
@@ -165,7 +184,7 @@
         <h2>Login</h2>
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
-        <button onclick="login()">Login</button>
+        <button onclick="loginWithSound()">Login</button>
         <div class="error" id="error"></div>
       </div>
       <button onclick="toggleMode()" id="modeBtn">🌙 Enable Dark Mode</button>
@@ -174,31 +193,27 @@
   </div>
 
   <script>
-    // Loader then show main
     window.addEventListener("load", function () {
       setTimeout(() => {
         document.getElementById("loader").style.display = "none";
         document.getElementById("container").classList.remove("hidden");
-
-        // Welcome sound
-        const welcomeSound = document.getElementById("welcome-audio");
-        welcomeSound.play().catch(() => {});
       }, 1000);
     });
 
-    function showLogin() {
-      document.getElementById("welcome-section").classList.add("hidden");
-      document.getElementById("login-section").classList.remove("hidden");
+    function handleContinue() {
+      document.getElementById("continue-sound").play().catch(() => {});
+      document.getElementById("welcome-audio").play().catch(() => {});
 
-      const bgMusic = document.getElementById("bg-music");
-      bgMusic.play().catch(() => {});
+      setTimeout(() => {
+        document.getElementById("welcome-section").classList.add("hidden");
+        document.getElementById("login-section").classList.remove("hidden");
+        document.getElementById("bg-music").play().catch(() => {});
+      }, 300);
     }
 
-    function toggleMusic() {
-      const music = document.getElementById("bg-music");
-      const btn = document.getElementById("musicBtn");
-      music.muted = !music.muted;
-      btn.textContent = music.muted ? "🔇 Unmute Music" : "🔊 Mute Music";
+    function loginWithSound() {
+      document.getElementById("login-sound").play().catch(() => {});
+      setTimeout(login, 300);
     }
 
     function login() {
@@ -214,10 +229,18 @@
     }
 
     function toggleMode() {
-      const body = document.body;
+      document.body.classList.toggle("night");
       const btn = document.getElementById("modeBtn");
-      body.classList.toggle("night");
-      btn.textContent = body.classList.contains("night") ? "☀️ Enable Light Mode" : "🌙 Enable Dark Mode";
+      btn.textContent = document.body.classList.contains("night")
+        ? "☀️ Enable Light Mode"
+        : "🌙 Enable Dark Mode";
+    }
+
+    function toggleMusic() {
+      const music = document.getElementById("bg-music");
+      const btn = document.getElementById("musicBtn");
+      music.muted = !music.muted;
+      btn.textContent = music.muted ? "🔇 Unmute Music" : "🔊 Mute Music";
     }
 
     document.addEventListener("DOMContentLoaded", function () {
